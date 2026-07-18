@@ -27,7 +27,7 @@ To build the mobile version of the game directly on your Android device using th
 4. **Locate your APK:** Once completed, the application automatically saves your compiled standalone mobile game in your device's internal storage under:
    `Download/WebViewBuilder/APK/`
 
-> ⚠️ **Warning:** You can also export and modify the full source code, but this requires fixing complex Java errors manually inside Android Studio. **We strongly recommend NOT doing this** unless you are an advanced developer. Stick to the automated WebView App Builder method instead!
+> ⚠️ **Warning:** You can also export and modify the full source code, but this requires fixing complex Java errors manually inside Android Studio. **We strongly recommend NOT doing this** unless you are an advanced developer. Stick to the automated WebView App Builder method instead! And due WebView security CORS, we recommend to download from android branch in this this repository.
 
 ---
 
