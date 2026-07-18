@@ -16,18 +16,17 @@ The project is built using a clean web stack (HTML5, CSS3, JS) extended with Win
 
 ```text
 📁 Granny-Clicker/
-├── 📁 assets/               # Game assets and media files[span_8](start_span)[span_8](end_span)
+├── 📁 assets/               # Game assets and media files
 │   ├── 📁 fonts/            # Custom game typography
 │   ├── 📁 lang/             # Language localization files
-│   ├── 📁 sounds/           # Audio, ambient background tracks, and Granny's voice lines[span_9](start_span)[span_9](end_span)
-│   └── 📁 textures/         # UI elements, backgrounds, and the official game logo[span_10](start_span)[span_10](end_span)
+│   ├── 📁 sounds/           # Audio, ambient background tracks, and Granny's voice lines
+│   └── 📁 textures/         # UI elements, backgrounds, and the official game logo
 ├── 📁 errors/               # Critical error pop-ups and notifications (.vbs files)
 ├── 📁 web/                  # Web engine files and source code
 │   ├── 📁 game/             # Game screen logic and rendering
 │   ├── 📁 scripts/          # Auxiliary and helper JavaScript files
 │   ├── 📁 styles/           # Layout and design style sheets (.css)
 │   └── 📁 title/            # Title/Main Menu screen components
-├── 📄 index.html            # Main engine entry point and game interface[span_11](start_span)[span_11](end_span)
+├── 📄 index.html            # Main engine entry point and game interface
 ├── 📄 launch.cmd            # Windows batch command script to initialize and launch the game
-├── 📄 package.json          # Configuration file (e.g., for bundling with NW.js for PC)[span_12](start_span)[span_12](end_span)
-└── 📄 README.md             # Project documentation[span_13](start_span)[span_13](end_span)
+├── 📄 package.json          # Configuration file (e.g., for bundling with NW.js for PC)
