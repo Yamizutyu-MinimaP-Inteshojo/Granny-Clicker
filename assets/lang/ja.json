@@ -1,4 +1,4 @@
-{
+window.jaLanguageData = {
     "buy_button": "購入",
     "category_upgrades": "強化",
     "changelog_header": "アップデート履歴",
@@ -55,4 +55,4 @@
     "vol_clicks": "クリックとUIの音量",
     "vol_music": "音楽の音量",
     "vol_voices": "音声の音量"
-}
+};
