@@ -13,8 +13,8 @@ To build the mobile version of the game directly on your Android device using th
 
 ### Step-by-Step Guide:
 1. **Prepare the configuration file:** 
-   * Go inside the `webview_for_android/` folder.
-   * Copy all assets from the game to `webview_for_android/assets/html/assets/`. The resulting path must be `webview_for_android/assets/html/assets/`. If you miss one level of the nested `assets/` directory, the game engine will fail to resolve asset paths...
+   * Go inside the `webview/` folder.
+   * Copy all assets from the game to `webview/assets/html/assets/`. The resulting path must be `webview/assets/html/assets/`. If you miss one level of the nested `assets/` directory, the game engine will fail to resolve asset paths...
    * Select **all the files inside this folder** (do NOT zip the folder itself, only its raw contents) and compress them into a standard `.zip` archive.
    * Rename the file extension of your newly created archive from `.zip` to **`.webviewproject`**.
 2. **Import into the app:**
