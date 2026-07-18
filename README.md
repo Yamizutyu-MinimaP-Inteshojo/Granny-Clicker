@@ -1,4 +1,4 @@
-# ![Game Logo](assets/textures/granny_clicker_logo.png) Granny Clicker
+# ![Game Logo](assets/textures/granny_clicker_logo.webp) Granny Clicker
 
 ![Granny Clicker v1.0](https://via.placeholder.com/800x120/00FFFF/000000?text=Granny+Clicker+v1.0)
 ![Version Status](https://via.placeholder.com/800x80/FF8C00/000000?text=STATUS:+RELEASE)
