@@ -1,0 +1,14 @@
+{
+  "name": "granny-clicker",
+  "version": "1.0.0",
+  "main": "index.html",
+  "window": {
+    "title": "Granny Clicker",
+    "width": 1280,
+    "height": 720,
+    "frame": true,
+    "resizable": true,
+    "position": "center",
+  },
+  "//1": "In main you can use index.html or web/title/title.html, but DO NOT choose game.html!"
+}
