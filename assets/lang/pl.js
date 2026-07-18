@@ -1,4 +1,4 @@
-{
+window.plLanguageData = {
     "buy_button": "Kup",
     "category_upgrades": "Ulepszenia",
     "changelog_header": "Lista Zmian (Changelog)",
@@ -52,4 +52,4 @@
     "vol_clicks": "Głośność Kliknięć i UI",
     "vol_music": "Głośność Muzyki",
     "vol_voices": "Głośność Głosów"
-}
+};
