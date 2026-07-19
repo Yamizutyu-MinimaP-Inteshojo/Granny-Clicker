@@ -81,7 +81,7 @@ function setRandomBackground() {
 }
 
 function playClickSound() {
-    const clickAudio = new Audio('../../assets/sounds/ui/granny/click.wav');
+    const clickAudio = new Audio(window.getAsset('sounds/ui/granny/click.wav'));
     clickAudio.volume = 0.6;
     clickAudio.play().catch(() => {});
 }
