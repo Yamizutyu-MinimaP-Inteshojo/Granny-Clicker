@@ -1,6 +1,6 @@
 async function applyTranslations(lang) {
     try {
-        const response = await fetch(`../../assets/lang/${lang}.json`);
+        const response = await fetch((window.ASSET_BASE || './assets/') + `lang/${lang}.json`);
         if (!response.ok) throw new Error();
         const translations = await response.json();
 
