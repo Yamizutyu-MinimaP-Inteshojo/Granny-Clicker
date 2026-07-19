@@ -21,12 +21,12 @@ if not exist nw.exe (
 )
 
 echo Concatenating nw.exe + package.nw -> GrannyClicker.exe
-copy /b nw.exe+package.nw dist\GrannyClicker.exe
+copy /b ..\library\nw.js\nw.exe+package.nw ..\build\dist\GrannyClicker.exe
 
 if exist build\icon.ico (
   echo Setting icon with rcedit (if available)...
   if exist build\rcedit.exe (
-    build\rcedit.exe dist\GrannyClicker.exe --set-icon build\icon.ico
+    ..\library\rcedit\rcedit.exe dist\GrannyClicker.exe --set-icon build\icon.ico
   ) else (
     echo rcedit.exe not found. Skip icon setting.
   )
