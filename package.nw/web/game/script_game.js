@@ -62,7 +62,7 @@ function setRandomBackground() {
 
 function initLoopingAudio() {
     if (!musicAudio) {
-        musicAudio = new Audio('../../assets/sounds/music/granny_house.mp3');
+        musicAudio = new Audio(window.getAsset('sounds/music/granny_house.mp3'));
         musicAudio.loop = true;
         musicAudio.volume = volumes.music;
     }
