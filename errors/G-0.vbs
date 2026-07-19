@@ -1,1 +1,0 @@
-x=msgbox("Critical Error: 'title.html' was not found in web\title\" & vbCrLf & "Granny deleted the game files. Reinstall to fix.", 16+0, "Granny Clicker - System Error: G-01")
