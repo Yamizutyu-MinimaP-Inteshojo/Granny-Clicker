@@ -1,20 +1,3 @@
-const path = require('path');
-const fs = require('fs');
-
-(function(){
-  try {
-    const exePath = path.dirname(process.execPath || process.argv[0]);
-    const candidate = path.join(exePath, 'assets');
-    if (fs.existsSync(candidate)) {
-      window.ASSET_BASE = 'file://' + candidate.replace(/\\/g, '/') + '/';
-    } else {
-      window.ASSET_BASE = './assets/';
-    }
-  } catch (e) {
-    window.ASSET_BASE = './assets/';
-  }
-})();
-
 function setRandomFavicon() {
     const rand = Math.random();
     let chosenChar = 'granny';
