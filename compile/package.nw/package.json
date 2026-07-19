@@ -1,0 +1,14 @@
+{
+  "name": "granny-clicker",
+  "version": "1.0.0",
+  "main": "index.html",
+  "node-main": "preload.js",
+  "window": {
+    "title": "Granny Clicker",
+    "width": 1280,
+    "height": 720,
+    "frame": true,
+    "resizable": true,
+    "position": "center"
+  }
+}
