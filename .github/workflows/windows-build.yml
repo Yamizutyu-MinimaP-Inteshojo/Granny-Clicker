@@ -7,7 +7,7 @@ on:
 
 env:
   NWJS_VERSION: "v0.70.0"    # ustaw swoją wersję NW.js
-  ARCH: "win64"             # win32 lub win64
+  ARCH: "x64"                # poprawiona wartość (x64 lub x86)
 
 jobs:
   build:
@@ -30,43 +30,66 @@ jobs:
           Remove-Item -Force -ErrorAction SilentlyContinue .\package.nw
           # include package.json, index.html and web/ folder; exclude big assets if you want them external
           $files = @("package.json","index.html")
-          Get-ChildItem -Path .\web -Recurse | ForEach-Object { $files += $_.FullName }
-          Compress-Archive -Path $files -DestinationPath .\package.nw
+          if (Test-Path .\web) {
+            Get-ChildItem -Path .\web -Recurse -File | ForEach-Object { $files += $_.FullName }
+          }
+          Compress-Archive -Path $files -DestinationPath .\package.nw -Force
 
       - name: Download NW.js runtime
         shell: powershell
         run: |
           $v = "${{ env.NWJS_VERSION }}"
           $arch = "${{ env.ARCH }}"
+          # NW.js releases use names like: nwjs-v0.70.0-win-x64.zip
           $url = "https://dl.nwjs.io/$v/nwjs-$v-win-$arch.zip"
+          Write-Host "Downloading $url"
           Invoke-WebRequest -Uri $url -OutFile nw.zip
-          Expand-Archive -Path nw.zip -DestinationPath nw_runtime
+          Expand-Archive -Path nw.zip -DestinationPath nw_runtime -Force
 
       - name: Build GrannyClicker.exe (concat)
-        shell: cmd
+        shell: powershell
         run: |
-          cd nw_runtime\nwjs-*
-          cd $PSScriptRoot\nw_runtime\nwjs-*
-          copy /b nw.exe+..\..\package.nw ..\GrannyClicker.exe
-        # depending on runner the path may need minor tweaks
+          # Znajdź rozpakowany folder nwjs-*
+          $nwFolder = Get-ChildItem -Path nw_runtime -Directory | Where-Object { $_.Name -like "nwjs-*" } | Select-Object -First 1
+          if (-not $nwFolder) { throw "NW.js runtime folder not found in nw_runtime" }
+          $nwExe = Join-Path $nwFolder.FullName "nw.exe"
+          if (-not (Test-Path $nwExe)) { throw "nw.exe not found at $nwExe" }
+          $package = Join-Path $PWD "package.nw"
+          if (-not (Test-Path $package)) { throw "package.nw not found at $package" }
+          $out = Join-Path $PWD "GrannyClicker.exe"
+          # Użyj cmd copy /b do konkatenacji binarnej
+          cmd /c "copy /b `"$nwExe`"+`"$package`" `"$out`""
+          if (-not (Test-Path $out)) { throw "Output exe not created" }
 
-      - name: Set icon (optional, requires rcedit.exe in repo or download)
-        if: ${{ secrets.WINDOWS_RCEDIT != '' }}
-        shell: cmd
+      - name: Set icon (optional, requires rcedit.exe path or secret)
+        if: ${{ secrets.WINDOWS_RCEDIT }}
+        shell: powershell
+        env:
+          WINDOWS_RCEDIT: ${{ secrets.WINDOWS_RCEDIT }}
         run: |
-          REM expects rcedit.exe at .\build\rcedit.exe or set secret to path
-          .\build\rcedit.exe ..\GrannyClicker.exe --set-icon .\build\icon.ico
+          # oczekuje ścieżki do rcedit.exe w sekrecie WINDOWS_RCEDIT lub możesz trzymać rcedit.exe w repo w ścieżce build\rcedit.exe
+          $rcedit = $env:WINDOWS_RCEDIT
+          if (-not (Test-Path $rcedit)) { throw "rcedit.exe not found at $rcedit" }
+          $exe = Join-Path $PWD "GrannyClicker.exe"
+          & $rcedit $exe --set-icon .\build\icon.ico
 
-      - name: Code sign (optional)
+      - name: Code sign (optional, expects SIGN_PFX secret as base64)
         if: ${{ secrets.SIGN_PFX }}
-        shell: cmd
+        shell: powershell
+        env:
+          SIGN_PFX: ${{ secrets.SIGN_PFX }}
+          SIGN_PFX_PASSWORD: ${{ secrets.SIGN_PFX_PASSWORD }}
         run: |
-          REM This requires CERT PFX in secrets and signtool available on runner
-          echo "%SIGN_PFX%" > cert.pfx
-          signtool sign /f cert.pfx /p "%{ { secrets.SIGN_PFX_PASSWORD } }" /fd SHA256 /tr http://timestamp.digicert.com /td SHA256 ..\GrannyClicker.exe
+          # Zakładam, że SECRET SIGN_PFX to PFX zakodowane base64 (bezpośrednie binarne nie przeniosłyby się przez YAML dobrze).
+          $bytes = [System.Convert]::FromBase64String($env:SIGN_PFX)
+          [System.IO.File]::WriteAllBytes("cert.pfx", $bytes)
+          $exe = Join-Path $PWD "GrannyClicker.exe"
+          if (-not (Test-Path $exe)) { throw "Executable not found for signing: $exe" }
+          # signtool musi być dostępny na runnerze (domyślnie jest w Windows-Runner jeśli zainstalowano Windows SDK)
+          & signtool sign /f cert.pfx /p $env:SIGN_PFX_PASSWORD /fd SHA256 /tr "http://timestamp.digicert.com" /td SHA256 $exe
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: GrannyClicker-win
-          path: ..\GrannyClicker.exe
+          path: GrannyClicker.exe
