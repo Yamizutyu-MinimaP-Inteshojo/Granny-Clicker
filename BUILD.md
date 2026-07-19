@@ -62,13 +62,13 @@ Before building, ensure you have a `package.json` file in your root directory. I
    * Choose **Windows** as your target platform.
    * Click **Export/Build**. The program will automatically fetch the required NW.js binaries, package your code into a internal **`.nw`** structure, and compile it into a single executable.
 2. **Method B: Keeping or not `assets/` outside the EXE (Manual Pro Method)**
-   * **Package your source code:** Select only your code files (`index.html`, `package.json`, and the `web/` folder). DO NOT include the `assets/` folder.
+   * **Package your source code:** Select only your code files (`index.html`, `package.json`, and the `web/` folder). DO NOT include or include the `assets/` folder.
    * **Create the package:** Compress these selected files into a `.zip` archive and rename it to **`package.nw`**.
    * **Merge with NW.js:** Download the official **NW.js** runtime for **Windows (x64)** and place your `package.nw` next to `nw.exe`. **Open Command Prompt (CMD)** in that directory and run:
 ```cmd
 copy /b nw.exe+package.nw GrannyClicker.exe
 ```
-   * **Final Directory Assembly:** Leave the structure as you see it. You can delete `nw.exe`, `swift...` folder, `credits.html` and `vulkan...`, but we recommend not to do this
+   * **Final Directory Assembly:** Leave the structure as you see it. You can delete `nw.exe`, `swift...` folder, `credits.html` and `vulkan...`, but we recommend not to do this.
 **Note:** If the assets don't load, you must changing paths for assets. You must use **Resource Hacker** to change icon, name, manifest and more.
 
 ---
