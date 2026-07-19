@@ -199,7 +199,7 @@ function triggerGrannyJumpscare() {
     const flash = document.getElementById('jumpscare-overlay');
     flash.classList.remove('hidden');
     
-    playSound(`../../assets/sounds/granny/grannyjumpscare.wav`, 'voices');
+    playSound(window.getAsset(`sounds/granny/grannyjumpscare.wav`, 'voices'));
     
     setTimeout(() => {
         flash.classList.add('hidden');
@@ -384,7 +384,7 @@ function playGrannyVoice() {
         currentVoiceAudio.currentTime = 0;
     }
 
-    currentVoiceAudio = new Audio(`../../assets/sounds/granny/${chosenVoice}`);
+    currentVoiceAudio = new Audio(window.getAsset(`sounds/granny/${chosenVoice}`));
     currentVoiceAudio.volume = volumes.voices;
     currentVoiceAudio.play().catch(() => {});
 }
@@ -405,7 +405,7 @@ function clickGranny(event) {
 
 async function loadLangFile(lang) {
     try {
-        const response = await fetch(`../../assets/lang/${lang}.json`);
+        const response = await fetch((window.ASSET_BASE || './assets/') + `lang/${lang}.jsAudio
         if (response.ok) langData = await response.json();
     } catch (e) {}
 }
