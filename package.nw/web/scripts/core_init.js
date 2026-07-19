@@ -15,7 +15,7 @@ const fs = require('fs');
   }
 })();
 
-functionn setRandomFavicon() {
+function setRandomFavicon() {
     const rand = Math.random();
     let chosenChar = 'granny';
     
