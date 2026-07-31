@@ -71,7 +71,6 @@ Since the main developer does not own devices running **MacOS, iOS**, we are cur
 If you manage to successfully build the game for any of these alternative platforms, **please consider recording a short video tutorial/guide** showing how you did it, and open a Pull Request! We would love to link your video and instructions here to help other players.
 
 ### What about other platforms?
-[NW.js website](https://nwjs.io/)
 * **iOS:** You will need to wrap the source code using a native iOS WebView solution (such as Swift's `WKWebView` or Apache Cordova) inside Xcode.
 * **Smart TVs & Android Watches:** Since many modern TVs (Android TV / Google TV) and Smart Watches (Wear OS) run on Android, the WebView App Builder configuration can be adapted to target these devices. Additionally, Samsung (Tizen) and LG (webOS) TVs natively support HTML5/JS apps, making a TV port highly feasible!
 * **Xbox (One, Series X/S):** Microsoft supports UWP (Universal Windows Platform) apps. By using wrapper frameworks like Apache Cordova, the HTML5/JS source code can be bundled into an `.appx` package and deployed directly to an Xbox running in Developer Mode.
