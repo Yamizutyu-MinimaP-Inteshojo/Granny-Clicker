@@ -9,7 +9,7 @@
   },
   "window": {
     "title": "Granny Clicker",
-    "icon": "assets/textures/ui/icons/granny.ico",
+    "icon": "assets/textures/ui/icons/granny_512.png",
     "toolbar": "true",
     "frame": "true",
     "width": 1280,
