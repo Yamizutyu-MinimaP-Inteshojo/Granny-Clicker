@@ -1,6 +1,6 @@
 # 🛠️ Granny Clicker – Compilation & Build Guide
 
-This document contains step-by-step instructions on how to compile and build **Granny Clicker** for both **Android** and **Windows (PC)** platforms.
+This document contains step-by-step instructions on how to compile and build **Granny Clicker** for both **Android** & **Windows, MacOS & Linux (PC)** platforms.
 
 ---
 
@@ -12,7 +12,8 @@ To build the mobile version of the game directly on your Android device using th
 * An Android device with **WebView App Builder** installed from the Google Play Store.
 
 ### Step-by-Step Guide:
-1. **Prepare the configuration file:** 
+1. **Prepare the configuration file:**
+   * Download **`Android` branch**
    * Go inside the `webview_for_android/` folder.
    * Copy all assets from the game to `webview_for_android/assets/html/assets/`. The resulting path must be `webview_for_android/assets/html/assets/`. If you miss one level of the nested `assets/` directory, the game engine will fail to resolve asset paths...
    * Select **all the files inside this folder** (do NOT zip the folder itself, only its raw contents) and compress them into a standard `.zip` archive.
@@ -35,29 +36,26 @@ To build the mobile version of the game directly on your Android device using th
 
 To convert the web stack into a standalone application (`.exe, .app, .elf`), you have one main options.
 
-### Configuration (`package.json`)
-Before building, ensure you have a `package.json` file in your root directory. It should look like this:
-```json
-{
-  "name": "granny-clicker",
-  "version": "'version'",
-  "main": "index.html",
-  "window": {
-    "title": "Granny Clicker",
-    "width": 1280,
-    "height": 720,
-    "frame": true,
-    "resizable": true,
-    "position": "center",
-  }
-}
-```
-**Note:** Keep **resizable: true** so players can scale the window.
+### Methods:
 
-### Method:
-1. **Method A:**
-   * Watch this tutorial [here](https://youtu.be/5UsGnjPYxLU?is=N8hQup3vKo0XF2uW).
-   * Sorry that I can't write here but this is the only way to build a game in Windows, MacOS and Linux at the same time in e.g. Windows.
+Configuration: Download **`NW.js` branch** and unzip. Inside folder rename `package.nw` into **`src`** or changed it in `package.json`.  
+
+1. **Method A On PC:**
+   * Download & install Node.js from [website](https://nodejs.org) or in command prompt `npm install` or `pkg install nodejs`.
+   * In cmd go to project folder typing `cd (localization of project folder)`.
+   * Type `npm i nw@0.114.0-sdk nw-builder -D` in cmd and wait until all will be downloaded.
+   * Build apps typing `npm run prod` or use `npm run dev` to test.
+
+> **Notes:** You can use `npm init -y` to create example `package.json`. In command `npm i nw@...` you must download latest version, you can check that in this [link](https://nwjs.io). You can use `package.json` from folder `build` when the apps were builded in the app's folder and in `package.nw` overwrite `package.json` to `package.json` from build. In **Windows** you can't build for **MacOS**.
+
+2. **Method B On Android with Termux (from F-Droid):**
+   * Put your unzipped folder in `storage\emulated\0` and rename it to **`Granny Clicker`**.
+   * Download **F-Droid** from official link [here](https://f-droid.org).
+   * Install **F-Droid** on your phone and open.
+   * Please wait when the repositories are installed.
+   * Search for the app **Termux** and download (do NOT install plugins).
+   * Open **Termux** and paste command from `build.sh` [file](granny-clicker-build.sh).
+   * Wait when all will be done and you have done this.
 
 ---
 
