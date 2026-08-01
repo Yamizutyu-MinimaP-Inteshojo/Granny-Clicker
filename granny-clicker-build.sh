@@ -36,36 +36,36 @@ cp ~/granny-clicker/build/package.json ~/granny-clicker/dist/linux-arm64
 # "Windows Packages..."
 
 cd ~/granny-clicker/dist/win32
-zip -r granny-clicker-1.0.0-win32.zip .
-mv granny-clicker-1.0.0-win32.zip "/storage/emulated/0/Granny Clicker/dist"
+zip -r granny-clicker-v1.0.0-win32.zip .
+mv granny-clicker-v1.0.0-win32.zip "/storage/emulated/0/Granny Clicker/dist"
 
 cd ../win64
-zip -r granny-clicker-1.0.0-win64.zip .
-mv granny-clicker-1.0.0-win64.zip "/storage/emulated/0/Granny Clicker/dist"
+zip -r granny-clicker-v1.0.0-win64.zip .
+mv granny-clicker-v1.0.0-win64.zip "/storage/emulated/0/Granny Clicker/dist"
 
 cd ../win-arm64
-zip -r granny-clicker-1.0.0-win-arm64.zip .
-mv granny-clicker-1.0.0-win-arm64.zip "/storage/emulated/0/Granny Clicker/dist"
+zip -r granny-clicker-v1.0.0-win-arm64.zip .
+mv granny-clicker-v1.0.0-win-arm64.zip "/storage/emulated/0/Granny Clicker/dist"
 
 # "MacOS Packages..."
 
 cd ../osx64
-zip -r -y granny-clicker-1.0.0-osx64.zip .
-mv granny-clicker-1.0.0-osx64.zip "/storage/emulated/0/Granny Clicker/dist"
+zip -r -y granny-clicker-v1.0.0-osx64.zip .
+mv granny-clicker-v1.0.0-osx64.zip "/storage/emulated/0/Granny Clicker/dist"
 
 cd ../osx-arm64
-zip -r -y granny-clicker-1.0.0-osx-arm64.zip .
-mv granny-clicker-1.0.0-osx-arm64.zip "/storage/emulated/0/Granny Clicker/dist"
+zip -r -y granny-clicker-v1.0.0-osx-arm64.zip .
+mv granny-clicker-v1.0.0-osx-arm64.zip "/storage/emulated/0/Granny Clicker/dist"
 
 # "Linux Packages..."
 
 cd ../linux64
-tar -czvf granny-clicker-1.0.0-linux64.tar.gz ./
-mv granny-clicker-1.0.0-linux64.tar.gz "/storage/emulated/0/Granny Clicker/dist"
+tar -czvf granny-clicker-v1.0.0-linux64.tar.gz ./
+mv granny-clicker-v1.0.0-linux64.tar.gz "/storage/emulated/0/Granny Clicker/dist"
 
 cd ../linux-arm64
-tar -czvf granny-clicker-1.0.0-linux-arm64.tar.gz ./
-mv granny-clicker-1.0.0-linux-arm64.tar.gz "/storage/emulated/0/Granny Clicker/dist"
+tar -czvf granny-clicker-v1.0.0-linux-arm64.tar.gz ./
+mv granny-clicker-v1.0.0-linux-arm64.tar.gz "/storage/emulated/0/Granny Clicker/dist"
 
 # "=========================================="
 # "BUILD FINISHED SUCCESSFULLY!"
