@@ -1,0 +1,18 @@
+{
+  "name": "granny-clicker",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "nw src/",
+    "prod": "node build.mjs"
+  },
+  "keywords": [],
+  "author": "Yamizutyu MinimaP Inteshojo",
+  "license": "ISC",
+  "devDependencies": {
+    "nw": "^0.114.0-sdk",
+    "nw-builder": "^4.18.0"
+  }
+}
