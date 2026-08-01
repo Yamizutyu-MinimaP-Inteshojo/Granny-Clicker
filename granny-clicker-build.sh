@@ -60,11 +60,11 @@ mv granny-clicker-v1.0.0-osx-arm64.zip "/storage/emulated/0/Granny Clicker/dist"
 # "Linux Packages..."
 
 cd ../linux64
-tar -czvf granny-clicker-v1.0.0-linux64.tar.gz ./
+tar -czvf granny-clicker-v1.0.0-linux64.tar.gz .
 mv granny-clicker-v1.0.0-linux64.tar.gz "/storage/emulated/0/Granny Clicker/dist"
 
 cd ../linux-arm64
-tar -czvf granny-clicker-v1.0.0-linux-arm64.tar.gz ./
+tar -czvf granny-clicker-v1.0.0-linux-arm64.tar.gz .
 mv granny-clicker-v1.0.0-linux-arm64.tar.gz "/storage/emulated/0/Granny Clicker/dist"
 
 # "=========================================="
