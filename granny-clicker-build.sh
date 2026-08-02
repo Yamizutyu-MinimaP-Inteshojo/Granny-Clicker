@@ -47,7 +47,7 @@ cd ../win-arm64
 zip -r granny-clicker-v1.0.0-win-arm64.zip .
 mv granny-clicker-v1.0.0-win-arm64.zip "/storage/emulated/0/Granny Clicker/dist"
 
-# "MacOS Packages..."
+# "macOS Packages..."
 
 cd ../osx64
 zip -r -y granny-clicker-v1.0.0-osx64.zip .
