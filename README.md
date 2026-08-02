@@ -76,7 +76,7 @@ Below is the exhaustive list of supported and targeted operating systems along w
 ### 6. 🚗 Automotive & Smart Displays
 - [ ] ![Android Automotive](https://img.shields.io/badge/Android_Automotive-3DDC84?style=flat-square&logo=android&logoColor=white) **Android Automotive OS** (`.apk`) — *(Not supported yet...)*
 ### 7. 🌐 Web & Browsers
-- [ ] ![WebAssembly](https://img.shields.io/badge/WebAssembly-654FF0?style=flat-square&logo=webassembly&logoColor=white) **WebAssembly / HTML5** (`.wasm`, `.js`, `.html`) — *(Not supported yet...)*
+- [x] ![WebAssembly](https://img.shields.io/badge/WebAssembly-654FF0?style=flat-square&logo=webassembly&logoColor=white) **WebAssembly / HTML5** (`.wasm`, `.js`, `.html`) — *(WebAssembly)*
 ---
 ## ⚡ Cross-Platform Compatibility Exceptions Matrix
 Even when two operating systems share the same file extension (e.g., `.apk` or `.ipa`), cross-device execution is subject to runtime dependencies, binary ABI matching, and UI target considerations.
