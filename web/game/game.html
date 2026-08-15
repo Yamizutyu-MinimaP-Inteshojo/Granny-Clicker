@@ -7,10 +7,66 @@
     <link rel="stylesheet" href="style_game.css">
     <script src="../scripts/core_init.js"></script>
     <script src="../scripts/translate.js"></script>
-    <script src="script_game.js"></script>
-    <script src="../scripts/granny.js"></script>
+    <script src="config.js"></script>
+    <script src="utils.js"></script>
+    <script src="ui.js"></script>
+    <script src="game.js"></script>
 </head>
 <body>
+
+    <div id="profile-overlay" class="hidden">
+       <div id="profile-box">
+            <button id="profile-close-btn" onclick="closeProfile()">X</button>
+            <h2 data-translate="profile_title">Player Profile</h2>
+    
+            <div class="profile-main-info">
+                <div class="avatar-selection-area">
+                    <img id="profile-avatar-current" src="../../assets/textures/ui/profile/granny.webp" alt="Avatar">
+                
+                    <div class="avatar-dropdown">
+                        <button id="avatar-dropdown-btn" onclick="toggleAvatarDropdown()">
+                            <span data-translate="select_avatar_label">Select Avatar</span> ▼
+                        </button>
+                        <div id="avatar-dropdown-menu" class="avatar-grid hidden">
+                            <img src="../../assets/textures/ui/profile/spider.webp" onclick="selectAvatar('spider')">
+                            <img src="../../assets/textures/ui/profile/spider_mom.webp" onclick="selectAvatar('spider_mom')">
+                            <img src="../../assets/textures/ui/profile/grandpa.webp" onclick="selectAvatar('grandpa')">
+                            <img src="../../assets/textures/ui/profile/granny.webp" onclick="selectAvatar('granny')">
+                            <img src="../../assets/textures/ui/profile/slendrina_mom.webp" onclick="selectAvatar('slendrina_mom')">
+                            <img src="../../assets/textures/ui/profile/slendrina.webp" onclick="selectAvatar('slendrina')">
+                            <img src="../../assets/textures/ui/profile/teto.webp" onclick="selectAvatar('teto')">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="profile-details">
+                    <div class="input-row">
+                        <label data-translate="username_label">Username:</label>
+                        <input type="text" id="profile-name-input" maxlength="16" onchange="updateProfileName(this.value)">
+                    </div>
+
+                    <div class="rank-container">
+                        <div class="rank-header">
+                            <img id="rank-icon" src="../../assets/textures/ui/tiers/bronze/bronze_0.webp" alt="Rank">
+                            <span id="rank-name-text">Bronze 0</span>
+                        </div>
+                        <div class="pts-row">
+                            <img src="../../assets/textures/ui/tiers/pts.webp" class="pts-icon" alt="PTS">
+                            <span id="pts-value-text">0 PTS</span>
+                        </div>
+                        <div class="progress-wrapper">
+                            <span id="rank-percent-text">0%</span>
+                            <div class="rank-progress-bar"><div id="rank-progress-fill"></div></div>
+                        </div>
+                    </div>
+
+                    <button id="save-profile-btn" onclick="saveProfileChanges()">
+                        <span data-translate="save_profile_button">Save Profile</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div id="bg"></div>
     <div id="jumpscare-overlay" class="hidden">
@@ -36,6 +92,10 @@
                     <img src="../../assets/textures/ui/options/options.webp" alt="Options">
                     <span data-translate="options_title">Options</span>
                 </button>
+                <button id="profile-open-btn" onclick="openProfile()">
+                      <img id="top-bar-avatar" src="../../assets/textures/ui/profile/granny.webp" alt="Profile">
+                      <span id="top-bar-username">Player</span>
+                </button>
             </div>
         </div>
 
@@ -54,9 +114,13 @@
             <button id="store-close-btn" onclick="closeStore()">X</button>
             
             <div id="store-sidebar">
-                <div class="sidebar-item active">
+                <div class="sidebar-item active" onclick="switchStoreTab('upgrades')" id="tab-btn-upgrades">
                     <img src="../../assets/textures/ui/store/icons/upgrade_def.webp" alt="Upgrades">
                     <span data-translate="category_upgrades">Upgrades</span>
+                </div>
+                <div class="sidebar-item" onclick="switchStoreTab('modules')" id="tab-btn-modules">
+                    <img src="../../assets/textures/ui/store/icons/module_def.webp" id="icon-modules" alt="Modules">
+                    <span data-translate="category_modules">Modules</span>
                 </div>
             </div>
 
@@ -88,6 +152,23 @@
                             </div>
                         </div>
                         <button id="btn-upgrade-auto" class="buy-btn" onclick="buyAutoClicker()" data-translate="buy_button">Buy</button>
+                    </div>
+                </div>
+
+                <div id="modules-list" class="hidden">
+                    <div class="store-item">
+                        <img class="item-icon" src="../../assets/textures/ui/store/modules/module_auto2x.webp" alt="Module Auto 2x">
+                        <div class="item-info">
+                            <div class="item-name" data-translate="module_auto2x_name">2x Auto Granny Coins</div>
+                            <div class="item-desc" data-translate="module_auto2x_desc">2x auto Granny Coins, but jumpscare is 1.25x faster</div>
+                            <div class="item-cost-container">
+                                <span data-translate="cost_label">Cost</span>: <span id="module-auto2x-cost">500</span>
+                            </div>
+                            <div class="item-owned-container">
+                                <span data-translate="owned_label">Owned</span>: <span id="module-auto2x-owned">0</span>
+                            </div>
+                        </div>
+                        <button id="btn-module-auto2x" class="buy-btn" onclick="buyModuleAuto2x()" data-translate="buy_button">Buy</button>
                     </div>
                 </div>
             </div>
@@ -123,13 +204,28 @@
 
             <div id="options-content">
                 <div id="tab-content-save" class="tab-panel">
-                    <h2 data-translate="save_header">Save File</h2>
-                    <p data-translate="coming_soon">Coming soon...</p>
+                    <h2 data-translate="save_header">Save File Management (.xsf)</h2>
+                    <div class="save-box-container">
+                        <div class="save-input-group">
+                            <label data-translate="save_password_label">Password (Optional):</label>
+                            <input type="password" id="save-password-input" placeholder="...">
+                        </div>
+                        <div class="save-actions">
+                            <button class="save-btn" onclick="exportSaveFile()">
+                                <img src="../../assets/textures/ui/options/save/export.webp" alt="Export">
+                                <span data-translate="btn_export">Export Save</span>
+                            </button>
+                            <label class="save-btn file-upload-btn">
+                                <img src="../../assets/textures/ui/options/save/import.webp" alt="Import">
+                                <span data-translate="btn_import">Import Save</span>
+                                <input type="file" id="save-file-input" accept=".xsf" onchange="importSaveFile(event)" hidden>
+                            </label>
+                        </div>
+                    </div>
                 </div>
 
                 <div id="tab-content-sfx" class="tab-panel hidden">
                     <h2 data-translate="sfx_header">Sound Settings</h2>
-                    
                     <div class="volume-control">
                         <div class="volume-label-container">
                             <label data-translate="vol_music">Music Volume</label>
@@ -183,7 +279,6 @@
 
                 <div id="tab-content-credits" class="tab-panel hidden">
                     <h2 data-translate="credits_header">Credits</h2>
-                    
                     <div class="author-card">
                         <img src="../../assets/textures/ui/credits/minimap.webp" alt="MinimaP">
                         <div class="author-info-block">
@@ -191,7 +286,6 @@
                             <div class="author-role" data-translate="role_minimap">Game Developer - Created everything</div>
                         </div>
                     </div>
-
                     <div class="author-card">
                         <div class="author-info-block text-only">
                             <div class="author-name">DVloper</div>
@@ -203,6 +297,13 @@
                 <div id="tab-content-changelog" class="tab-panel hidden">
                     <h2 data-translate="changelog_header">Changelog</h2>
                     <div class="changelog-version">
+                        <h3 data-translate="version_1.1_name">v1.1 - The Profile Update</h3>
+                        <ul>
+                            <li data-translate="1.1_cl_desc_1">Added Tier System with rank progression.</li>
+                            <li data-translate="1.1_cl_desc_2">Added Player Profile customization (avatars and username).</li>
+                            <li data-translate="1.1_cl_desc_3">Added Save/Load system with optional password.</li>
+                            <li data-translate="1.1_cl_desc_4">Added Modules tab in store featuring Overclock Module (2x Auto CPS).</li>
+                        </ul>
                         <h3 data-translate="version_1.0_name">v1.0 - Initial Release</h3>
                         <ul>
                             <li data-translate="1.0_cl_desc_1">Official release of Granny Clicker!</li>
@@ -225,4 +326,4 @@
     <div id="notification" class="hidden"></div>
 
 </body>
-</html>
+    </html>
