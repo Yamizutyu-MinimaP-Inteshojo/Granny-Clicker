@@ -5,7 +5,7 @@ cls
 
 :menu
 echo ========================================
-echo         GRANNY CLICKER - 1.0
+echo         GRANNY CLICKER - 1.1
 echo ========================================
 echo.
 echo I can hear you... Do you dare to enter?
