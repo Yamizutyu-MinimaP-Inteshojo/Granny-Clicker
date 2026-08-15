@@ -9,7 +9,6 @@
 **Core Mechanics:**
 * **Clicking & Upgrades:** Earn coins and purchase multipliers (e.g., 2x more coins per click) and Auto-Clickers.
 * **Time Pressure (Jumpscare):** Granny has a hidden timer. If you are not careful and the timer reaches zero, you will get caught and lose a portion of your collected coins.
-* **Progression (Coming soon in 1.1):** Player profiles, tiers with ranking points, shop modules, and encrypted password-protected save systems.
 
 ## 📂 Project Structure
 The project is built using a clean web stack (HTML5, CSS3, JS) extended with Windows automation scripts. The structure is designed to easily compile the game into a standalone mobile app (.apk), a PC game (.exe) or other platforms.
