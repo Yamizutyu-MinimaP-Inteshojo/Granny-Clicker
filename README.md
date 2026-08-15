@@ -1,6 +1,6 @@
 # ![Game Logo](package.nw/assets/textures/granny_clicker_logo.webp) Granny Clicker
 
-![Version](https://img.shields.io/badge/Version-v1.0.0--Release-cyan)
+![Version](https://img.shields.io/badge/Version-v1.1.0--Release-cyan)
 ![Status](https://img.shields.io/badge/Status-Release-orange)
 
 ## 🎮 What is the game about?
