@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Granny Clicker - Game</title>
+    <link rel="stylesheet" href="style_game.css">
+    <script src="../scripts/core_init.js"></script>
+    <script src="../scripts/translate.js"></script>
+    <script src="config.js"></script>
+    <script src="utils.js"></script>
+    <script src="ui.js"></script>
+    <script src="xsf_manager.js"></script>
+    <script src="game.js"></script>
+</head>
+<body>
+
+    <div id="profile-overlay" class="hidden">
+       <div id="profile-box">
+            <button id="profile-close-btn" onclick="closeProfile()">X</button>
+            <h2 data-translate="profile_title">Player Profile</h2>
+    
+            <div class="profile-main-info">
+                <div class="avatar-selection-area">
+                    <img id="profile-avatar-current" src="../../assets/textures/ui/profile/granny.webp" alt="Avatar">
+                
+                    <div class="avatar-dropdown">
+                        <button id="avatar-dropdown-btn" onclick="toggleAvatarDropdown()">
+                            <span data-translate="select_avatar_label">Select Avatar</span> ▼
+                        </button>
+                        <div id="avatar-dropdown-menu" class="avatar-grid hidden">
+                            <img src="../../assets/textures/ui/profile/spider.webp" onclick="selectAvatar('spider')">
+                            <img src="../../assets/textures/ui/profile/spider_mom.webp" onclick="selectAvatar('spider_mom')">
+                            <img src="../../assets/textures/ui/profile/grandpa.webp" onclick="selectAvatar('grandpa')">
+                            <img src="../../assets/textures/ui/profile/granny.webp" onclick="selectAvatar('granny')">
+                            <img src="../../assets/textures/ui/profile/slendrina_mom.webp" onclick="selectAvatar('slendrina_mom')">
+                            <img src="../../assets/textures/ui/profile/slendrina.webp" onclick="selectAvatar('slendrina')">
+                            <img src="../../assets/textures/ui/profile/teto.webp" onclick="selectAvatar('teto')">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="profile-details">
+                    <div class="input-row">
+                        <label data-translate="username_label">Username:</label>
+                        <input type="text" id="profile-name-input" maxlength="32" onchange="updateProfileName(this.value)">
+                    </div>
+
+                    <div class="rank-container">
+                        <div class="rank-header">
+                            <img id="rank-icon" src="../../assets/textures/ui/tiers/bronze/bronze_0.webp" alt="Rank">
+                            <span id="rank-name-text">Bronze 0</span>
+                        </div>
+                        <div class="pts-row">
+                            <img src="../../assets/textures/ui/tiers/pts.webp" class="pts-icon" alt="PTS">
+                            <span id="pts-value-text">0 PTS</span>
+                        </div>
+                        <div class="progress-wrapper">
+                            <span id="rank-percent-text">0%</span>
+                            <div class="rank-progress-bar"><div id="rank-progress-fill"></div></div>
+                        </div>
+                    </div>
+
+                    <button id="save-profile-btn" onclick="saveProfileChanges()">
+                        <span data-translate="save_profile_button">Save Profile</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="bg"></div>
+    <div id="jumpscare-overlay" class="hidden">
+        <div id="jumpscare-granny"></div>
+    </div>
+
+    <div id="game-container">
+        <div id="top-bar">
+            <div id="granny-container">
+                <div class="currency-row">
+                    <img id="currency-icon" src="../../assets/textures/currency/granny/golden.webp" alt="Granny Coins">
+                    <span id="granny-label" data-translate="currency_name">Granny Coins</span>: <span id="granny-value">0</span>
+                </div>
+                <div id="cps-display">+0 / sec</div>
+            </div>
+            
+            <div id="top-buttons">
+                <button id="store-open-btn" onclick="openStore()">
+                    <img src="../../assets/textures/ui/store/store.webp" alt="Store">
+                    <span data-translate="store_title">Store</span>
+                </button>
+                <button id="options-open-btn" onclick="openOptions()">
+                    <img src="../../assets/textures/ui/options/options.webp" alt="Options">
+                    <span data-translate="options_title">Options</span>
+                </button>
+                <button id="profile-open-btn" onclick="openProfile()">
+                      <img id="top-bar-avatar" src="../../assets/textures/ui/profile/granny.webp" alt="Profile">
+                      <span id="top-bar-username">Player</span>
+                </button>
+            </div>
+        </div>
+
+        <div id="granny-timer-container">
+            <div id="granny-timer-text">Granny will catch you at -- seconds</div>
+            <div id="granny-progress-bar"><div id="granny-progress-fill"></div></div>
+        </div>
+
+        <div id="granny-btn-wrapper">
+            <div id="granny-btn" onclick="clickGranny(event)"></div>
+        </div>
+    </div>
+
+    <div id="store-overlay" class="hidden">
+        <div id="store-box">
+            <button id="store-close-btn" onclick="closeStore()">X</button>
+            
+            <div id="store-sidebar">
+                <div class="sidebar-item active" onclick="switchStoreTab('upgrades')" id="tab-btn-upgrades">
+                    <img src="../../assets/textures/ui/store/icons/upgrade_def.webp" alt="Upgrades">
+                    <span data-translate="category_upgrades">Upgrades</span>
+                </div>
+                <div class="sidebar-item" onclick="switchStoreTab('modules')" id="tab-btn-modules">
+                    <img src="../../assets/textures/ui/store/icons/module_def.webp" id="icon-modules" alt="Modules">
+                    <span data-translate="category_modules">Modules</span>
+                </div>
+            </div>
+
+            <div id="store-content">
+                <div id="upgrades-list">
+                    <div class="store-item">
+                        <img class="item-icon" src="../../assets/textures/ui/store/upgrades/upgrade2x.webp" alt="2x Coins">
+                        <div class="item-info">
+                            <div class="item-name" data-translate="upgrade_2x_name">Double Granny Coins</div>
+                            <div class="item-cost-container">
+                                <span data-translate="cost_label">Cost</span>: <span id="upgrade-2x-cost">2</span>
+                            </div>
+                            <div class="item-owned-container">
+                                <span data-translate="owned_label">Owned</span>: <span id="upgrade-2x-owned">0</span>
+                            </div>
+                        </div>
+                        <button id="btn-upgrade-2x" class="buy-btn" onclick="buyDoubleCoins()" data-translate="buy_button">Buy</button>
+                    </div>
+
+                    <div class="store-item">
+                        <img class="item-icon" src="../../assets/textures/ui/store/upgrades/upgrade_auto.webp" alt="Auto Clicker">
+                        <div class="item-info">
+                            <div class="item-name" data-translate="upgrade_auto_name">Auto Clicker</div>
+                            <div class="item-cost-container">
+                                <span data-translate="cost_label">Cost</span>: <span id="upgrade-auto-cost">15</span>
+                            </div>
+                            <div class="item-owned-container">
+                                <span data-translate="owned_label">Owned</span>: <span id="upgrade-auto-owned">0</span>
+                            </div>
+                        </div>
+                        <button id="btn-upgrade-auto" class="buy-btn" onclick="buyAutoClicker()" data-translate="buy_button">Buy</button>
+                    </div>
+                </div>
+
+                <div id="modules-list" class="hidden">
+                    <div class="store-item">
+                        <img class="item-icon" src="../../assets/textures/ui/store/modules/module_auto2x.webp" alt="Module Auto 2x">
+                        <div class="item-info">
+                            <div class="item-name" data-translate="module_auto2x_name">2x Auto Granny Coins</div>
+                            <div class="item-desc" data-translate="module_auto2x_desc">2x auto Granny Coins, but jumpscare is 1.25x faster</div>
+                            <div class="item-cost-container">
+                                <span data-translate="cost_label">Cost</span>: <span id="module-auto2x-cost">500</span>
+                            </div>
+                            <div class="item-owned-container">
+                                <span data-translate="owned_label">Owned</span>: <span id="module-auto2x-owned">0</span>
+                            </div>
+                        </div>
+                        <button id="btn-module-auto2x" class="buy-btn" onclick="buyModuleAuto2x()" data-translate="buy_button">Buy</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="options-overlay" class="hidden">
+        <div id="options-box">
+            <button id="options-close-btn" onclick="closeOptions()">X</button>
+            
+            <div id="options-sidebar">
+                <div class="sidebar-item active" onclick="switchOptionsTab('save')" id="tab-btn-save">
+                    <img src="../../assets/textures/ui/options/save.webp" alt="Save">
+                    <span data-translate="tab_save">Save File</span>
+                </div>
+                <div class="sidebar-item" onclick="switchOptionsTab('sfx')" id="tab-btn-sfx">
+                    <img src="../../assets/textures/ui/options/sfx.webp" alt="SFX">
+                    <span data-translate="tab_sfx">Sound Effect</span>
+                </div>
+                <div class="sidebar-item" onclick="switchOptionsTab('language')" id="tab-btn-language">
+                    <img src="../../assets/textures/ui/options/languages.webp" alt="Language">
+                    <span data-translate="tab_language">Language</span>
+                </div>
+                <div class="sidebar-item" onclick="switchOptionsTab('credits')" id="tab-btn-credits">
+                    <img src="../../assets/textures/ui/options/credits.webp" alt="Credits">
+                    <span data-translate="tab_credits">Credits</span>
+                </div>
+                <div class="sidebar-item" onclick="switchOptionsTab('changelog')" id="tab-btn-changelog">
+                    <img src="../../assets/textures/ui/options/changelog.webp" alt="Changelog">
+                    <span data-translate="tab_changelog">Changelog</span>
+                </div>
+            </div>
+
+            <div id="options-content">
+                <div id="tab-content-save" class="tab-panel">
+                    <h2 data-translate="save_header">Save File Management</h2>
+                    <div class="save-box-container">
+                        <div class="input-row">
+                            <input type="text" id="save-name-input" data-translate-placeholder="save_name_placeholder" placeholder="Enter save name...">
+                            <input type="text" id="save-desc-input" data-translate-placeholder="save_desc_placeholder" placeholder="Enter save description...">
+                        </div>
+                        <button onclick="exportSaveFile()" class="save-btn">
+                            <img src="../../assets/textures/ui/options/save/export.webp" alt="Export"> <span data-translate="btn_export">Export Save</span>
+                        </button>
+                        <label class="load-btn">
+                            <img src="../../assets/textures/ui/options/save/import.webp" alt="Save"> <span data-translate="btn_import">Import Save</span>
+                            <input type="file" id="load-btn" accept=".xsf" onchange="importSaveFile(event)" style="display: none">
+                        </label>
+                    </div>
+                    <p></p>
+                    <div class="sub-sidebar" id="img-local-storage">
+                        <img src="../../assets/textures/ui/options/save/localstorage.webp" alt="Local Storage">
+                        <span data-translate="local_storage_header">Local Storage Management</span>
+                    </div>
+                    <div id="save-slots-container">
+                        <!-- Slot 1 -->
+                        <div class="save-slot-card" data-slot="0">
+                            <div class="slot-info">
+                                <span class="slot-title" data-translate="save_slot_title" data-translate-params='{"id": "1"}'>Slot 1</span>
+                                <span class="slot-desc" data-translate="save_empty_slot">Empty Slot</span>
+                            </div>
+                            <div class="slot-actions">
+                                <button class="slot-action-btn" onclick="handleSlotAction(0)" data-translate-title="btn_save_slot" title="Save"><img src="../../assets/textures/ui/options/save/save.webp" alt="Save"></button>
+                                <button class="slot-action-btn" onclick="loadSlot(0)" data-translate-title="btn_load_slot" title="Load"><img src="../../assets/textures/ui/options/save/load.webp" alt="Load"></button>
+                                <button class="slot-action-btn" onclick="inspectSlot(0)" data-translate-title="btn_inspect_slot" title="Inspect"><img src="../../assets/textures/ui/options/save/save_content.webp" alt="Inspect"></button>
+                                <button class="slot-action-btn" onclick="copySlot(0)" data-translate-title="btn_copy_slot" title="Copy"><img src="../../assets/textures/ui/options/save/copy.webp" alt="Copy"></button>
+                                <button class="slot-action-btn" onclick="copyEncryptedSlot(0)" data-translate-title="btn_copy_encrypted" title="Copy Encrypted"><img src="../../assets/textures/ui/options/save/copy_save_text.webp" alt="Copy Encrypted"></button>
+                                <button class="slot-action-btn" onclick="pasteEncryptedSlot(0)" data-translate-title="btn_paste_encrypted" title="Paste Encrypted"><img src="../../assets/textures/ui/options/save/paste_save_text.webp" alt="Paste Encrypted"></button>
+                                <button class="slot-action-btn" onclick="deleteSlot(0)" data-translate-title="btn_delete_slot" title="Delete"><img src="../../assets/textures/ui/options/save/delete.webp" alt="Delete"></button>
+                            </div>
+                        </div>
+                        <!-- Slot 2 -->
+                        <div class="save-slot-card" data-slot="1">
+                            <div class="slot-info">
+                                <span class="slot-title" data-translate="save_slot_title" data-translate-params='{"id": "2"}'>Slot 2</span>
+                                <span class="slot-desc" data-translate="save_empty_slot">Empty Slot</span>
+                            </div>
+                            <div class="slot-actions">
+                                <button class="slot-action-btn" onclick="handleSlotAction(1)" data-translate-title="btn_save_slot" title="Save"><img src="../../assets/textures/ui/options/save/save.webp" alt="Save"></button>
+                                <button class="slot-action-btn" onclick="loadSlot(1)" data-translate-title="btn_load_slot" title="Load"><img src="../../assets/textures/ui/options/save/load.webp" alt="Load"></button>
+                                <button class="slot-action-btn" onclick="inspectSlot(1)" data-translate-title="btn_inspect_slot" title="Inspect"><img src="../../assets/textures/ui/options/save/save_content.webp" alt="Inspect"></button>
+                                <button class="slot-action-btn" onclick="copySlot(1)" data-translate-title="btn_copy_slot" title="Copy"><img src="../../assets/textures/ui/options/save/copy.webp" alt="Copy"></button>
+                                <button class="slot-action-btn" onclick="copyEncryptedSlot(1)" data-translate-title="btn_copy_encrypted" title="Copy Encrypted"><img src="../../assets/textures/ui/options/save/copy_save_text.webp" alt="Copy Encrypted"></button>
+                                <button class="slot-action-btn" onclick="pasteEncryptedSlot(1)" data-translate-title="btn_paste_encrypted" title="Paste Encrypted"><img src="../../assets/textures/ui/options/save/paste_save_text.webp" alt="Paste Encrypted"></button>
+                                <button class="slot-action-btn" onclick="deleteSlot(1)" data-translate-title="btn_delete_slot" title="Delete"><img src="../../assets/textures/ui/options/save/delete.webp" alt="Delete"></button>
+                            </div>
+                        </div>
+                        <!-- Slot 3 -->
+                        <div class="save-slot-card" data-slot="2">
+                            <div class="slot-info">
+                                <span class="slot-title" data-translate="save_slot_title" data-translate-params='{"id": "3"}'>Slot 3</span>
+                                <span class="slot-desc" data-translate="save_empty_slot">Empty Slot</span>
+                            </div>
+                            <div class="slot-actions">
+                                <button class="slot-action-btn" onclick="handleSlotAction(2)" data-translate-title="btn_save_slot" title="Save"><img src="../../assets/textures/ui/options/save/save.webp" alt="Save"></button>
+                                <button class="slot-action-btn" onclick="loadSlot(2)" data-translate-title="btn_load_slot" title="Load"><img src="../../assets/textures/ui/options/save/load.webp" alt="Load"></button>
+                                <button class="slot-action-btn" onclick="inspectSlot(2)" data-translate-title="btn_inspect_slot" title="Inspect"><img src="../../assets/textures/ui/options/save/save_content.webp" alt="Inspect"></button>
+                                <button class="slot-action-btn" onclick="copySlot(2)" data-translate-title="btn_copy_slot" title="Copy"><img src="../../assets/textures/ui/options/save/copy.webp" alt="Copy"></button>
+                                <button class="slot-action-btn" onclick="copyEncryptedSlot(2)" data-translate-title="btn_copy_encrypted" title="Copy Encrypted"><img src="../../assets/textures/ui/options/save/copy_save_text.webp" alt="Copy Encrypted"></button>
+                                <button class="slot-action-btn" onclick="pasteEncryptedSlot(2)" data-translate-title="btn_paste_encrypted" title="Paste Encrypted"><img src="../../assets/textures/ui/options/save/paste_save_text.webp" alt="Paste Encrypted"></button>
+                                <button class="slot-action-btn" onclick="deleteSlot(2)" data-translate-title="btn_delete_slot" title="Delete"><img src="../../assets/textures/ui/options/save/delete.webp" alt="Delete"></button>
+                            </div>
+                        </div>
+                        <!-- Slot 4 -->
+                        <div class="save-slot-card" data-slot="3">
+                            <div class="slot-info">
+                                <span class="slot-title" data-translate="save_slot_title" data-translate-params='{"id": "4"}'>Slot 4</span>
+                                <span class="slot-desc" data-translate="save_empty_slot">Empty Slot</span>
+                            </div>
+                            <div class="slot-actions">
+                                <button class="slot-action-btn" onclick="handleSlotAction(3)" data-translate-title="btn_save_slot" title="Save"><img src="../../assets/textures/ui/options/save/save.webp" alt="Save"></button>
+                                <button class="slot-action-btn" onclick="loadSlot(3)" data-translate-title="btn_load_slot" title="Load"><img src="../../assets/textures/ui/options/save/load.webp" alt="Load"></button>
+                                <button class="slot-action-btn" onclick="inspectSlot(3)" data-translate-title="btn_inspect_slot" title="Inspect"><img src="../../assets/textures/ui/options/save/save_content.webp" alt="Inspect"></button>
+                                <button class="slot-action-btn" onclick="copySlot(3)" data-translate-title="btn_copy_slot" title="Copy"><img src="../../assets/textures/ui/options/save/copy.webp" alt="Copy"></button>
+                                <button class="slot-action-btn" onclick="copyEncryptedSlot(3)" data-translate-title="btn_copy_encrypted" title="Copy Encrypted"><img src="../../assets/textures/ui/options/save/copy_save_text.webp" alt="Copy Encrypted"></button>
+                                <button class="slot-action-btn" onclick="pasteEncryptedSlot(3)" data-translate-title="btn_paste_encrypted" title="Paste Encrypted"><img src="../../assets/textures/ui/options/save/paste_save_text.webp" alt="Paste Encrypted"></button>
+                                <button class="slot-action-btn" onclick="deleteSlot(3)" data-translate-title="btn_delete_slot" title="Delete"><img src="../../assets/textures/ui/options/save/delete.webp" alt="Delete"></button>
+                            </div>
+                        </div>
+                        <!-- Slot 5 -->
+                        <div class="save-slot-card" data-slot="4">
+                            <div class="slot-info">
+                                <span class="slot-title" data-translate="save_slot_title" data-translate-params='{"id": "5"}'>Slot 5</span>
+                                <span class="slot-desc" data-translate="save_empty_slot">Empty Slot</span>
+                            </div>
+                            <div class="slot-actions">
+                                <button class="slot-action-btn" onclick="handleSlotAction(4)" data-translate-title="btn_save_slot" title="Save"><img src="../../assets/textures/ui/options/save/save.webp" alt="Save"></button>
+                                <button class="slot-action-btn" onclick="loadSlot(4)" data-translate-title="btn_load_slot" title="Load"><img src="../../assets/textures/ui/options/save/load.webp" alt="Load"></button>
+                                <button class="slot-action-btn" onclick="inspectSlot(4)" data-translate-title="btn_inspect_slot" title="Inspect"><img src="../../assets/textures/ui/options/save/save_content.webp" alt="Inspect"></button>
+                                <button class="slot-action-btn" onclick="copySlot(4)" data-translate-title="btn_copy_slot" title="Copy"><img src="../../assets/textures/ui/options/save/copy.webp" alt="Copy"></button>
+                                <button class="slot-action-btn" onclick="copyEncryptedSlot(4)" data-translate-title="btn_copy_encrypted" title="Copy Encrypted"><img src="../../assets/textures/ui/options/save/copy_save_text.webp" alt="Copy Encrypted"></button>
+                                <button class="slot-action-btn" onclick="pasteEncryptedSlot(4)" data-translate-title="btn_paste_encrypted" title="Paste Encrypted"><img src="../../assets/textures/ui/options/save/paste_save_text.webp" alt="Paste Encrypted"></button>
+                                <button class="slot-action-btn" onclick="deleteSlot(4)" data-translate-title="btn_delete_slot" title="Delete"><img src="../../assets/textures/ui/options/save/delete.webp" alt="Delete"></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="tab-content-sfx" class="tab-panel hidden">
+                    <h2 data-translate="sfx_header">Sound Settings</h2>
+                    <div class="volume-control">
+                        <div class="volume-label-container">
+                            <label data-translate="vol_music">Music Volume</label>
+                            <span id="val-music">70%</span>
+                        </div>
+                        <input type="range" min="0" max="100" value="70" oninput="updateChannelVolume('music', this.value)">
+                    </div>
+                    <div class="volume-control">
+                        <div class="volume-label-container">
+                            <label data-translate="vol_ambient">Ambient Volume</label>
+                            <span id="val-ambient">60%</span>
+                        </div>
+                        <input type="range" min="0" max="100" value="60" oninput="updateChannelVolume('ambient', this.value)">
+                    </div>
+                    <div class="volume-control">
+                        <div class="volume-label-container">
+                            <label data-translate="vol_voices">Voices Volume</label>
+                            <span id="val-voices">80%</span>
+                        </div>
+                        <input type="range" min="0" max="100" value="80" oninput="updateChannelVolume('voices', this.value)">
+                    </div>
+                    <div class="volume-control">
+                        <div class="volume-label-container">
+                            <label data-translate="vol_clicks">Click & UI Volume</label>
+                            <span id="val-clicks">100%</span>
+                        </div>
+                        <input type="range" min="0" max="100" value="100" oninput="updateChannelVolume('clicks', this.value)">
+                    </div>
+
+                    <div class="sound-pack-select">
+                        <h3 data-translate="sound_pack_title">Sound Pack Style</h3>
+                        <label class="radio-container">
+                            <input type="radio" name="soundpack" value="granny" checked onclick="setSoundPack('granny')">
+                            <span class="radio-label" data-translate="pack_granny">Classic Granny</span>
+                        </label>
+                        <label class="radio-container">
+                            <input type="radio" name="soundpack" value="mitai" onclick="setSoundPack('mitai')">
+                            <span class="radio-label" data-translate="pack_mitai">Project MITAI (プロジェクト三田井)</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div id="tab-content-language" class="tab-panel hidden">
+                    <h2 data-translate="language_header">Select Language</h2>
+                    <div id="lang-options-list">
+                        <button class="lang-btn" onclick="changeGameLanguage('en')" data-translate="lang_en">English</button>
+                        <button class="lang-btn" onclick="changeGameLanguage('pl')" data-translate="lang_pl">Polski (Polish)</button>
+                        <button class="lang-btn" onclick="changeGameLanguage('ja')" data-translate="lang_ja">日本語 (Japanese)</button>
+                    </div>
+                </div>
+
+                <div id="tab-content-credits" class="tab-panel hidden">
+                    <h2 data-translate="credits_header">Credits</h2>
+                    <div class="author-card">
+                        <img src="../../assets/textures/ui/credits/minimap.webp" alt="MinimaP">
+                        <div class="author-info-block">
+                            <div class="author-name">闇づてゅ MinimaP い゙んてしょじょっ</div>
+                            <div class="author-role" data-translate="role_minimap">Game Developer - Created everything</div>
+                        </div>
+                    </div>
+                    <div class="author-card">
+                        <div class="author-info-block text-only">
+                            <div class="author-name">DVloper</div>
+                            <div class="author-role" data-translate="role_dvloper">Original creator of Granny game (Some textures, sounds, and assets)</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="tab-content-changelog" class="tab-panel hidden">
+                    <h2 data-translate="changelog_header">Changelog</h2>
+                    <div class="changelog-version">
+                        <h3 data-translate="version_1.1_name">v1.1 - The Profile Update</h3>
+                        <ul>
+                            <li data-translate="1.1_cl_desc_1">Added Tier System with rank progression.</li>
+                            <li data-translate="1.1_cl_desc_2">Added Player Profile customization (avatars and username).</li>
+                            <li data-translate="1.1_cl_desc_3">Added 5 LocalStorage save slots with inspection, encrypted copy/paste, custom save titles/descriptions, export/import save, and full management features.</li>
+                            <li data-translate="1.1_cl_desc_4">Added Modules tab in store featuring Overclock Module (2x Auto CPS).</li>
+                        </ul>
+                        <h3 data-translate="version_1.0_name">v1.0 - Initial Release</h3>
+                        <ul>
+                            <li data-translate="1.0_cl_desc_1">Official release of Granny Clicker!</li>
+                            <li data-translate="1.0_cl_desc_2">Core Granny clicker mechanics with a dynamic multiplier and unique scale animations.</li>
+                            <li data-translate="1.0_cl_desc_3">Upgrade store featuring Double Coins (2x multiplier) and Auto Clicker.</li>
+                            <li data-translate="1.0_cl_desc_4">Threat system: Granny randomly spawns counting down to an immersive fullscreen jumpscare.</li>
+                            <li data-translate="1.0_cl_desc_5">Advanced audio mixer with independent volume sliders and live percentage indicators.</li>
+                            <li data-translate="1.0_cl_desc_6">Selectable sound pack styles (Classic Granny and Project MITAI).</li>
+                            <li data-translate="1.0_cl_desc_7">Full localization for 3 languages: English, Japanese, and Polish (alphabetically sorted).</li>
+                            <li data-translate="1.0_cl_desc_8">Atmospheric audio & visuals: randomized location backgrounds, looping house music, ambient sounds, and original Granny voice lines.</li>
+                            <li data-translate="1.0_cl_desc_9">Built-in anti-cheat system detecting suspiciously fast clicks with atmospheric resets.</li>
+                            <li data-translate="1.0_cl_desc_10">Custom Granny mouse cursor optimized for PC players.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="notification" class="hidden"></div>
+
+</body>
+</html>
