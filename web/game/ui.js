@@ -41,6 +41,27 @@ function updateTimerUI() {
     if (fillElement) fillElement.style.width = `${Math.max(0, Math.min(100, (timeToCatch / initialTimeSet) * 100))}%`;
 }
 
+function updateVolumesUI() {
+    
+    const channels = ['music', 'ambient', 'voices', 'clicks'];
+    
+    channels.forEach(channel => {
+        let rawValue = volumes[channel] !== undefined ? volumes[channel] : 1.0;
+        
+        let percentValue = rawValue <= 1 ? Math.round(rawValue * 100) : Math.round(rawValue);
+        
+        const input = document.querySelector(`input[type="range"][oninput*="${channel}"]`);
+        if (input) {
+            input.value = percentValue;
+        }
+        
+        const span = document.getElementById(`val-${channel}`);
+        if (span) {
+            span.textContent = percentValue + '%';
+        }
+    });
+}
+
 function createFloatingText(text, isPlus, event = null) {
     const wrapper = document.getElementById('granny-btn-wrapper');
     if (!wrapper) return;
@@ -74,7 +95,7 @@ function showNotification(message) {
 
 function openStore() { initLoopingAudio(); toggleOverlay('store-overlay', true); playUiSound('pause_01'); }
 function closeStore() { toggleOverlay('store-overlay', false); playUiSound('start'); }
-function openOptions() { initLoopingAudio(); toggleOverlay('options-overlay', true); playUiSound('pause_01'); }
+function openOptions() { initLoopingAudio(); toggleOverlay('options-overlay', true); playUiSound('pause_01'); updateSaveSlotsUI(); }
 function closeOptions() { toggleOverlay('options-overlay', false); playUiSound('start'); }
 function openProfile() { initLoopingAudio(); tempProfile = { ...playerProfile }; toggleOverlay('profile-overlay', true); updateProfileUI(); playUiSound('pause_01'); }
 function closeProfile() { toggleOverlay('profile-overlay', false); playUiSound('start'); }
@@ -101,6 +122,9 @@ async function changeGameLanguage(lang) {
     if (typeof applyTranslations === 'function') applyTranslations(lang);
     
     updateCoinsUI();
+    
+    if (typeof updateSaveSlotsUI === 'function') updateSaveSlotsUI();
+        
     const cpsDisp = document.getElementById('cps-display');
     if (cpsDisp) cpsDisp.innerText = `+${formatNumber(autoCps)} / ${langData['per_second'] || 'sec'}`;
     playUiSound('accept');
@@ -261,154 +285,47 @@ function updateSoundPackUI() {
     });
 }
 
-function exportSaveFile() {
-    const passwordInput = document.getElementById('save-password-input');
-    const password = passwordInput ? passwordInput.value : '';
-    const now = new Date();
-
-    const xsfStructure = {
-        Header: { game: "Granny Clicker", version: GAME_VERSION, versionKey: `${GAME_VERSION.split('.')[0]}.${GAME_VERSION.split('.')[1]}.x` },
-        Body: { granny, clickMultiplier, upgrade2xCost, upgrade2xOwned, upgradeAutoCost, upgradeAutoOwned, autoCps, moduleAuto2xOwned, moduleAuto2xCost, jumpscareSpeedMultiplier, playerProfile, timeToCatch, initialTimeSet, currentRoomKey },
-        Data: { timestamp: now.getTime(), dateFormatted: now.toISOString().split('T')[0], timeFormatted: now.toTimeString().split(' ')[0] },
-        Additional: { volumes, soundPack, saveSequence: saveSequenceNumber }
-    };
-
-    const jsonString = JSON.stringify(xsfStructure);
-    let outputString = password ? "ENC:" + btoa(unescape(encodeURIComponent(xorCipher(jsonString, password)))) : "RAW:" + btoa(unescape(encodeURIComponent(jsonString)));
-
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(new Blob([outputString], { type: "application/xsf" }));
-    a.download = `granny-save_${now.toISOString().split('T')[0]}_${saveSequenceNumber++}.xsf`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-}
-
-function importSaveFile(event) {
-    const file = event.target.files[0];
-    if (!file) return;
+function showCustomModal(title, contentHTML, onAccept, onCancel) {
+    if (typeof playUiSound === 'function') playUiSound('click');
     
-    if (!file.name.toLowerCase().endsWith('.xsf')) {
-        alert("File isn't in extension .xsf");
-        event.target.value = "";
-        return;
-    }
+    let existingModal = document.getElementById('custom-game-modal');
+    if (existingModal) existingModal.remove();
 
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        try {
-            const rawContent = e.target.result.trim();
-            let jsonString = "";
-            let isUnprefixed = false;
-            
-            if (rawContent.startsWith("ENC:")) {
-                const passwordInput = document.getElementById('save-password-input');
-                let password = passwordInput ? passwordInput.value : prompt("This file is password-protected. Enter password:");
-                if (!password) {
-                    event.target.value = "";
-                    return;
-                }
+    const modalOverlay = document.createElement('div');
+    modalOverlay.id = 'custom-game-modal';
 
-                try {
-                    jsonString = xorCipher(decodeURIComponent(escape(atob(rawContent.substring(4)))), password);
-                } catch (err) {
-                    alert("Wrong password");
-                    event.target.value = "";
-                    return;
-                }
-            } else if (rawContent.startsWith("RAW:")) {
-                jsonString = decodeURIComponent(escape(atob(rawContent.replace("RAW:", ""))));
-            } else if (rawContent.startsWith("{")) {
-                jsonString = rawContent;
-                isUnencoded = true;
-            } else {
-                alert("Save is corrupted");
-                event.target.value = "";
-                return;
-            }
-            
-            let xsfData;
-            try {
-                xsfData = JSON.parse(jsonString);
-            } catch (err) {
-                if (rawContent.startsWith("ENC:")) {
-                    alert("Wrong password");
-                } else {
-                    alert("Save is corrupted");
-                }
-                event.target.value = "";
-                return;
-            }
-            
-            if (!xsfData.Header || !xsfData.Header.game) {
-                alert("Save is corrupted");
-                event.target.value = "";
-                return;
-            }
+    modalOverlay.innerHTML = `
+        <div class="custom-modal-box">
+            <h3>${title}</h3>
+            <div class="custom-modal-body">
+                ${contentHTML}
+            </div>
+            <div class="custom-modal-buttons">
+                <button id="modal-cancel-btn" class="custom-modal-btn">${langData['btn_cancel'] || 'Cancel'}</button>
+                <button id="modal-accept-btn" class="custom-modal-btn accept">${langData['btn_accept'] || 'Accept'}</button>
+            </div>
+        </div>
+    `;
 
-            if (xsfData.Header.game !== "Granny Clicker") {
-                alert(`Save is from ${xsfData.Header.game} not on this game`);
-                event.target.value = "";
-                return;
-            }
-            
-            const currentVer = GAME_VERSION;
-            const saveVer = xsfData.Header.version || "1.0.0";
+    document.body.appendChild(modalOverlay);
 
-            const parseVer = (v) => v.split('.').map(Number);
-            const [cMajor, cMinor, cPatch] = parseVer(currentVer);
-            const [sMajor, sMinor, sPatch] = parseVer(saveVer);
-
-            let isHigher = false;
-            if (sMajor > cMajor) isHigher = true;
-            else if (sMajor === cMajor && sMinor > cMinor) isHigher = true;
-            else if (sMajor === cMajor && sMinor === cMinor && sPatch > cPatch) isHigher = true;
-
-            if (isHigher) {
-                alert(`The save file is for ${saveVer} not ${currentVer}`);
-                event.target.value = "";
-                return;
-            }
-            
-            const body = xsfData.Body || {};
-            granny = body.granny || 0;
-            clickMultiplier = body.clickMultiplier || 0.25;
-            upgrade2xCost = body.upgrade2xCost || 2;
-            upgrade2xOwned = body.upgrade2xOwned || 0;
-            upgradeAutoCost = body.upgradeAutoCost || 15;
-            upgradeAutoOwned = body.upgradeAutoOwned || 0;
-            autoCps = body.autoCps || 0;
-            moduleAuto2xOwned = body.moduleAuto2xOwned || 0;
-            moduleAuto2xCost = body.moduleAuto2xCost || 500;
-            jumpscareSpeedMultiplier = body.jumpscareSpeedMultiplier || 1.0;
-            timeToCatch = body.timeToCatch || 30;
-            initialTimeSet = body.initialTimeSet || 30;
-            if (body.currentRoomKey) currentRoomKey = body.currentRoomKey;
-            if (body.playerProfile) playerProfile = body.playerProfile;
-            
-            if (xsfData.Additional) {
-                if (xsfData.Additional.volumes) volumes = xsfData.Additional.volumes;
-                if (xsfData.Additional.soundPack) soundPack = xsfData.Additional.soundPack;
-            }
-
-            updateCoinsUI();
-            updateTimerUI();
-            updateProfileUI();
-            recalculateAutoCps();
-
-            if (isUnencoded) {
-                alert("You're know .xsf file, great!");
-            } else if (saveVer !== currentVer) {
-                alert(`Save loaded successfully but version was ${saveVer}`);
-            } else {
-                alert("Save loaded successfully");
-            }
-
-        } catch (err) {
-            alert("Save is corrupted");
-        }
-        event.target.value = "";
+    document.getElementById('modal-cancel-btn').onclick = () => {
+        if (typeof playUiSound === 'function') playUiSound('cancel');
+        modalOverlay.remove();
+        if (onCancel) onCancel();
     };
 
-    reader.readAsText(file);
+    document.getElementById('modal-accept-btn').onclick = () => {
+        if (typeof playUiSound === 'function') playUiSound('accept');
+        const inputs = modalOverlay.querySelectorAll('input, select, textarea');
+        let formData = {};
+        inputs.forEach(input => {
+            if (input.id || input.name) {
+                formData[input.id || input.name] = input.value;
+            }
+        });
+
+        if (onAccept && onAccept(formData) === false) return;
+        modalOverlay.remove();
+    };
 }

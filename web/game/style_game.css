@@ -395,15 +395,27 @@ body::before {
 .save-btn img { width: 20px; height: 20px; }
 #save-code-area { width: 100%; height: 80px; background: #111; border: 1px solid #555; color: #00ff00; font-family: monospace; }
 
-.file-upload-btn {
-    display: inline-flex;
+.load-btn {
+    flex: 1;
+    background: #330000;
+    border: 1px solid #cc0000;
+    color: #fff;
+    padding: 8px;
+    cursor: pointer;
+    display: flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
+    gap: 6px;
+    font-family: 'Monotype Corsiva', serif;
+    font-size: 18px;
+    transition: all 0.2s ease-in-out;
 }
-.file-upload-btn input[type="file"] {
-    display: none;
+.load-btn:hover {
+    background: #cc0000;
+    color: #000;
+    box-shadow: 0 0 12px #ff0000;
 }
+.load-btn img { width: 20px; height: 20px; }
 
 .avatar-selection-area {
     display: flex;
@@ -420,9 +432,9 @@ body::before {
 #avatar-dropdown-btn {
     width: 100%;
     padding: 8px 12px;
-    background-color: #2b2b2b;
-    color: #ffffff;
-    border: 2px solid #444444;
+    background-color: #330000;
+    color: #fff;
+    border: 1px solid #cc0000;
     border-radius: 6px;
     cursor: pointer;
     font-size: 0.9rem;
@@ -431,8 +443,9 @@ body::before {
 }
 
 #avatar-dropdown-btn:hover {
-    background-color: #3d3d3d;
-    border-color: #888888;
+    background: #cc0000;
+    color: #000;
+    box-shadow: 0 0 12px #ff0000;
 }
 
 #avatar-dropdown-menu.avatar-grid {
@@ -492,3 +505,149 @@ body::before {
 #save-profile-btn:active {
     transform: scale(0.97);
 }
+
+.save-slot-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(40, 10, 10, 0.4);
+    border: 1px solid rgba(204, 0, 0, 0.3);
+    padding: 12px 15px;
+    margin-bottom: 10px;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.slot-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.slot-title {
+    font-size: 20px;
+    font-weight: bold;
+    color: #ffaa00;
+}
+
+.slot-desc {
+    font-size: 15px;
+    color: #aaa;
+}
+
+.slot-actions {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.slot-action-btn {
+    background: #200000;
+    border: 1px solid #cc0000;
+    cursor: pointer;
+    padding: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.slot-action-btn:hover {
+    background: #cc0000;
+    box-shadow: 0 0 8px #ff0000;
+}
+
+.slot-action-btn img {
+    width: 18px !important;
+    height: 18px !important;
+    object-fit: contain;
+}
+
+#custom-game-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 99999;
+    font-family: 'Monotype Corsiva', serif;
+}
+
+.custom-modal-box {
+    background: rgba(15, 2, 2, 0.95);
+    border: 3px solid #cc0000;
+    border-radius: 0px;
+    padding: 25px;
+    width: 450px;
+    max-width: 90%;
+    color: #cc0000;
+    box-shadow: 0 0 30px #550000;
+    box-sizing: border-box;
+}
+
+.custom-modal-box h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 26px;
+    color: #ffaa00;
+    border-bottom: 1px solid #cc0000;
+    padding-bottom: 8px;
+    text-shadow: 0 0 5px #000;
+}
+
+.custom-modal-body {
+    margin-bottom: 20px;
+    color: #bbb;
+    font-size: 18px;
+}
+
+.custom-modal-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.custom-modal-btn {
+    background: #330000;
+    color: #fff;
+    border: 1px solid #cc0000;
+    padding: 8px 18px;
+    font-family: 'Monotype Corsiva', serif;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+.custom-modal-btn:hover {
+    background: #cc0000;
+    color: #000;
+    box-shadow: 0 0 12px #ff0000;
+}
+
+.custom-modal-btn.accept {
+    background: #cc0000;
+    color: #000;
+}
+
+.custom-modal-btn.accept:hover {
+    background: #ff0000;
+    box-shadow: 0 0 15px #ff0000;
+}
+
+.sub-sidebar {
+	display: flex;
+	font-size: 30px;
+	align-items: center;
+	word-break: break-word;
+	gap: 0px; 
+    padding: 0px 1px; 
+	font-weight: bold;
+}
+
+.sub-sidebar img { width: 40px; height: 40px; flex-shrink: 0; object-fit: contain; }

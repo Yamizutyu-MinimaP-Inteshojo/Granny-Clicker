@@ -134,6 +134,8 @@ async function initGame() {
     await loadLangFile(savedLang);
     if (typeof applyTranslations === 'function') applyTranslations(savedLang);
     
+    if (typeof updateSaveSlotsUI === 'function') updateSaveSlotsUI();
+    
     updateCoinsUI();
     window.resetGrannyTimer();
     startAutoClicker();

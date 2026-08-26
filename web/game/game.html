@@ -10,6 +10,7 @@
     <script src="config.js"></script>
     <script src="utils.js"></script>
     <script src="ui.js"></script>
+    <script src="xsf_manager.js"></script>
     <script src="game.js"></script>
 </head>
 <body>
@@ -42,7 +43,7 @@
                 <div class="profile-details">
                     <div class="input-row">
                         <label data-translate="username_label">Username:</label>
-                        <input type="text" id="profile-name-input" maxlength="16" onchange="updateProfileName(this.value)">
+                        <input type="text" id="profile-name-input" maxlength="32" onchange="updateProfileName(this.value)">
                     </div>
 
                     <div class="rank-container">
@@ -204,22 +205,105 @@
 
             <div id="options-content">
                 <div id="tab-content-save" class="tab-panel">
-                    <h2 data-translate="save_header">Save File Management (.xsf)</h2>
+                    <h2 data-translate="save_header">Save File Management</h2>
                     <div class="save-box-container">
-                        <div class="save-input-group">
-                            <label data-translate="save_password_label">Password (Optional):</label>
-                            <input type="password" id="save-password-input" placeholder="...">
+                        <div class="input-row">
+                            <input type="text" id="save-name-input" data-translate-placeholder="save_name_placeholder" placeholder="Enter save name...">
+                            <input type="text" id="save-desc-input" data-translate-placeholder="save_desc_placeholder" placeholder="Enter save description...">
                         </div>
-                        <div class="save-actions">
-                            <button class="save-btn" onclick="exportSaveFile()">
-                                <img src="../../assets/textures/ui/options/save/export.webp" alt="Export">
-                                <span data-translate="btn_export">Export Save</span>
-                            </button>
-                            <label class="save-btn file-upload-btn">
-                                <img src="../../assets/textures/ui/options/save/import.webp" alt="Import">
-                                <span data-translate="btn_import">Import Save</span>
-                                <input type="file" id="save-file-input" accept=".xsf" onchange="importSaveFile(event)" hidden>
-                            </label>
+                        <button onclick="exportSaveFile()" class="save-btn">
+                            <img src="../../assets/textures/ui/options/save/export.webp" alt="Export"> <span data-translate="btn_export">Export Save</span>
+                        </button>
+                        <label class="load-btn">
+                            <img src="../../assets/textures/ui/options/save/import.webp" alt="Save"> <span data-translate="btn_import">Import Save</span>
+                            <input type="file" id="load-btn" accept=".xsf" onchange="importSaveFile(event)" style="display: none">
+                        </label>
+                    </div>
+                    <p></p>
+                    <div class="sub-sidebar" id="img-local-storage">
+                        <img src="../../assets/textures/ui/options/save/localstorage.webp" alt="Local Storage">
+                        <span data-translate="local_storage_header">Local Storage Management</span>
+                    </div>
+                    <div id="save-slots-container">
+                        <!-- Slot 1 -->
+                        <div class="save-slot-card" data-slot="0">
+                            <div class="slot-info">
+                                <span class="slot-title" data-translate="save_slot_title" data-translate-params='{"id": "1"}'>Slot 1</span>
+                                <span class="slot-desc" data-translate="save_empty_slot">Empty Slot</span>
+                            </div>
+                            <div class="slot-actions">
+                                <button class="slot-action-btn" onclick="handleSlotAction(0)" data-translate-title="btn_save_slot" title="Save"><img src="../../assets/textures/ui/options/save/save.webp" alt="Save"></button>
+                                <button class="slot-action-btn" onclick="loadSlot(0)" data-translate-title="btn_load_slot" title="Load"><img src="../../assets/textures/ui/options/save/load.webp" alt="Load"></button>
+                                <button class="slot-action-btn" onclick="inspectSlot(0)" data-translate-title="btn_inspect_slot" title="Inspect"><img src="../../assets/textures/ui/options/save/save_content.webp" alt="Inspect"></button>
+                                <button class="slot-action-btn" onclick="copySlot(0)" data-translate-title="btn_copy_slot" title="Copy"><img src="../../assets/textures/ui/options/save/copy.webp" alt="Copy"></button>
+                                <button class="slot-action-btn" onclick="copyEncryptedSlot(0)" data-translate-title="btn_copy_encrypted" title="Copy Encrypted"><img src="../../assets/textures/ui/options/save/copy_save_text.webp" alt="Copy Encrypted"></button>
+                                <button class="slot-action-btn" onclick="pasteEncryptedSlot(0)" data-translate-title="btn_paste_encrypted" title="Paste Encrypted"><img src="../../assets/textures/ui/options/save/paste_save_text.webp" alt="Paste Encrypted"></button>
+                                <button class="slot-action-btn" onclick="deleteSlot(0)" data-translate-title="btn_delete_slot" title="Delete"><img src="../../assets/textures/ui/options/save/delete.webp" alt="Delete"></button>
+                            </div>
+                        </div>
+                        <!-- Slot 2 -->
+                        <div class="save-slot-card" data-slot="1">
+                            <div class="slot-info">
+                                <span class="slot-title" data-translate="save_slot_title" data-translate-params='{"id": "2"}'>Slot 2</span>
+                                <span class="slot-desc" data-translate="save_empty_slot">Empty Slot</span>
+                            </div>
+                            <div class="slot-actions">
+                                <button class="slot-action-btn" onclick="handleSlotAction(1)" data-translate-title="btn_save_slot" title="Save"><img src="../../assets/textures/ui/options/save/save.webp" alt="Save"></button>
+                                <button class="slot-action-btn" onclick="loadSlot(1)" data-translate-title="btn_load_slot" title="Load"><img src="../../assets/textures/ui/options/save/load.webp" alt="Load"></button>
+                                <button class="slot-action-btn" onclick="inspectSlot(1)" data-translate-title="btn_inspect_slot" title="Inspect"><img src="../../assets/textures/ui/options/save/save_content.webp" alt="Inspect"></button>
+                                <button class="slot-action-btn" onclick="copySlot(1)" data-translate-title="btn_copy_slot" title="Copy"><img src="../../assets/textures/ui/options/save/copy.webp" alt="Copy"></button>
+                                <button class="slot-action-btn" onclick="copyEncryptedSlot(1)" data-translate-title="btn_copy_encrypted" title="Copy Encrypted"><img src="../../assets/textures/ui/options/save/copy_save_text.webp" alt="Copy Encrypted"></button>
+                                <button class="slot-action-btn" onclick="pasteEncryptedSlot(1)" data-translate-title="btn_paste_encrypted" title="Paste Encrypted"><img src="../../assets/textures/ui/options/save/paste_save_text.webp" alt="Paste Encrypted"></button>
+                                <button class="slot-action-btn" onclick="deleteSlot(1)" data-translate-title="btn_delete_slot" title="Delete"><img src="../../assets/textures/ui/options/save/delete.webp" alt="Delete"></button>
+                            </div>
+                        </div>
+                        <!-- Slot 3 -->
+                        <div class="save-slot-card" data-slot="2">
+                            <div class="slot-info">
+                                <span class="slot-title" data-translate="save_slot_title" data-translate-params='{"id": "3"}'>Slot 3</span>
+                                <span class="slot-desc" data-translate="save_empty_slot">Empty Slot</span>
+                            </div>
+                            <div class="slot-actions">
+                                <button class="slot-action-btn" onclick="handleSlotAction(2)" data-translate-title="btn_save_slot" title="Save"><img src="../../assets/textures/ui/options/save/save.webp" alt="Save"></button>
+                                <button class="slot-action-btn" onclick="loadSlot(2)" data-translate-title="btn_load_slot" title="Load"><img src="../../assets/textures/ui/options/save/load.webp" alt="Load"></button>
+                                <button class="slot-action-btn" onclick="inspectSlot(2)" data-translate-title="btn_inspect_slot" title="Inspect"><img src="../../assets/textures/ui/options/save/save_content.webp" alt="Inspect"></button>
+                                <button class="slot-action-btn" onclick="copySlot(2)" data-translate-title="btn_copy_slot" title="Copy"><img src="../../assets/textures/ui/options/save/copy.webp" alt="Copy"></button>
+                                <button class="slot-action-btn" onclick="copyEncryptedSlot(2)" data-translate-title="btn_copy_encrypted" title="Copy Encrypted"><img src="../../assets/textures/ui/options/save/copy_save_text.webp" alt="Copy Encrypted"></button>
+                                <button class="slot-action-btn" onclick="pasteEncryptedSlot(2)" data-translate-title="btn_paste_encrypted" title="Paste Encrypted"><img src="../../assets/textures/ui/options/save/paste_save_text.webp" alt="Paste Encrypted"></button>
+                                <button class="slot-action-btn" onclick="deleteSlot(2)" data-translate-title="btn_delete_slot" title="Delete"><img src="../../assets/textures/ui/options/save/delete.webp" alt="Delete"></button>
+                            </div>
+                        </div>
+                        <!-- Slot 4 -->
+                        <div class="save-slot-card" data-slot="3">
+                            <div class="slot-info">
+                                <span class="slot-title" data-translate="save_slot_title" data-translate-params='{"id": "4"}'>Slot 4</span>
+                                <span class="slot-desc" data-translate="save_empty_slot">Empty Slot</span>
+                            </div>
+                            <div class="slot-actions">
+                                <button class="slot-action-btn" onclick="handleSlotAction(3)" data-translate-title="btn_save_slot" title="Save"><img src="../../assets/textures/ui/options/save/save.webp" alt="Save"></button>
+                                <button class="slot-action-btn" onclick="loadSlot(3)" data-translate-title="btn_load_slot" title="Load"><img src="../../assets/textures/ui/options/save/load.webp" alt="Load"></button>
+                                <button class="slot-action-btn" onclick="inspectSlot(3)" data-translate-title="btn_inspect_slot" title="Inspect"><img src="../../assets/textures/ui/options/save/save_content.webp" alt="Inspect"></button>
+                                <button class="slot-action-btn" onclick="copySlot(3)" data-translate-title="btn_copy_slot" title="Copy"><img src="../../assets/textures/ui/options/save/copy.webp" alt="Copy"></button>
+                                <button class="slot-action-btn" onclick="copyEncryptedSlot(3)" data-translate-title="btn_copy_encrypted" title="Copy Encrypted"><img src="../../assets/textures/ui/options/save/copy_save_text.webp" alt="Copy Encrypted"></button>
+                                <button class="slot-action-btn" onclick="pasteEncryptedSlot(3)" data-translate-title="btn_paste_encrypted" title="Paste Encrypted"><img src="../../assets/textures/ui/options/save/paste_save_text.webp" alt="Paste Encrypted"></button>
+                                <button class="slot-action-btn" onclick="deleteSlot(3)" data-translate-title="btn_delete_slot" title="Delete"><img src="../../assets/textures/ui/options/save/delete.webp" alt="Delete"></button>
+                            </div>
+                        </div>
+                        <!-- Slot 5 -->
+                        <div class="save-slot-card" data-slot="4">
+                            <div class="slot-info">
+                                <span class="slot-title" data-translate="save_slot_title" data-translate-params='{"id": "5"}'>Slot 5</span>
+                                <span class="slot-desc" data-translate="save_empty_slot">Empty Slot</span>
+                            </div>
+                            <div class="slot-actions">
+                                <button class="slot-action-btn" onclick="handleSlotAction(4)" data-translate-title="btn_save_slot" title="Save"><img src="../../assets/textures/ui/options/save/save.webp" alt="Save"></button>
+                                <button class="slot-action-btn" onclick="loadSlot(4)" data-translate-title="btn_load_slot" title="Load"><img src="../../assets/textures/ui/options/save/load.webp" alt="Load"></button>
+                                <button class="slot-action-btn" onclick="inspectSlot(4)" data-translate-title="btn_inspect_slot" title="Inspect"><img src="../../assets/textures/ui/options/save/save_content.webp" alt="Inspect"></button>
+                                <button class="slot-action-btn" onclick="copySlot(4)" data-translate-title="btn_copy_slot" title="Copy"><img src="../../assets/textures/ui/options/save/copy.webp" alt="Copy"></button>
+                                <button class="slot-action-btn" onclick="copyEncryptedSlot(4)" data-translate-title="btn_copy_encrypted" title="Copy Encrypted"><img src="../../assets/textures/ui/options/save/copy_save_text.webp" alt="Copy Encrypted"></button>
+                                <button class="slot-action-btn" onclick="pasteEncryptedSlot(4)" data-translate-title="btn_paste_encrypted" title="Paste Encrypted"><img src="../../assets/textures/ui/options/save/paste_save_text.webp" alt="Paste Encrypted"></button>
+                                <button class="slot-action-btn" onclick="deleteSlot(4)" data-translate-title="btn_delete_slot" title="Delete"><img src="../../assets/textures/ui/options/save/delete.webp" alt="Delete"></button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -271,9 +355,9 @@
                 <div id="tab-content-language" class="tab-panel hidden">
                     <h2 data-translate="language_header">Select Language</h2>
                     <div id="lang-options-list">
-                        <button class="lang-btn" onclick="changeGameLanguage('en')">English</button>
-                        <button class="lang-btn" onclick="changeGameLanguage('ja')">日本語</button>
-                        <button class="lang-btn" onclick="changeGameLanguage('pl')">Polski</button>
+                        <button class="lang-btn" onclick="changeGameLanguage('en')" data-translate="lang_en">English</button>
+                        <button class="lang-btn" onclick="changeGameLanguage('pl')" data-translate="lang_pl">Polski (Polish)</button>
+                        <button class="lang-btn" onclick="changeGameLanguage('ja')" data-translate="lang_ja">日本語 (Japanese)</button>
                     </div>
                 </div>
 
@@ -301,7 +385,7 @@
                         <ul>
                             <li data-translate="1.1_cl_desc_1">Added Tier System with rank progression.</li>
                             <li data-translate="1.1_cl_desc_2">Added Player Profile customization (avatars and username).</li>
-                            <li data-translate="1.1_cl_desc_3">Added Save/Load system with optional password.</li>
+                            <li data-translate="1.1_cl_desc_3">Added 5 LocalStorage save slots with inspection, encrypted copy/paste, custom save titles/descriptions, export/import save, and full management features.</li>
                             <li data-translate="1.1_cl_desc_4">Added Modules tab in store featuring Overclock Module (2x Auto CPS).</li>
                         </ul>
                         <h3 data-translate="version_1.0_name">v1.0 - Initial Release</h3>
@@ -326,4 +410,4 @@
     <div id="notification" class="hidden"></div>
 
 </body>
-    </html>
+</html>
