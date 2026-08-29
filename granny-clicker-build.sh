@@ -17,9 +17,10 @@ cd "/storage/emulated/0/Granny Clicker"
 rsync -av ./ ~/granny-clicker/
 cd ~/granny-clicker
 
-npm i nw@0.114.0-sdk nw-builder -D
-npm install-scripts approve nw@0.114.0-sdk
-npm install-scripts approve nw-builder@4.18.0
+npm install -g npm@12.0.2
+npm i nw@0.115.0-sdk nw-builder -D
+npm install-scripts approve nw@0.115.0-sdk
+npm install-scripts approve nw-builder@4.19.0
 npm rebuild
 
 npm run prod
